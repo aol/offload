@@ -63,7 +63,8 @@ This avoids the **rush to repopulate cache** that happens when a cached item exp
 
 ### Draining the Offload Queue
 
-To drain the offload queue properly, it is best to setup a PHP shutdown handler. For example:
+To drain the offload queue properly, it is best to setup a PHP shutdown handler.
+This ensures the offload tasks will always be run at the end of the request. Example:
 
 ```php
 // ...
@@ -87,8 +88,6 @@ register_shutdown_function(function () use ($offload) {
   }
 });
 ```
-
-This ensures the offload tasks will always be run.
 
 ## Deferreds
 
