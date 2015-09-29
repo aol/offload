@@ -4,6 +4,7 @@ Simplify cached PHP tasks: background refresh, last-known-good, and single write
 
 [![Build Status](https://travis-ci.org/aol/offload.svg?branch=master)](https://travis-ci.org/aol/offload)
 [![Coverage Status](https://coveralls.io/repos/aol/offload/badge.svg?branch=master&service=github)](https://coveralls.io/github/aol/offload?branch=master)
+[![Code Climate](https://codeclimate.com/github/aol/offload/badges/gpa.svg)](https://codeclimate.com/github/aol/offload)
 [![Latest Stable Version](https://poser.pugx.org/aol/offload/v/stable)](https://packagist.org/packages/aol/offload)
 [![Latest Unstable Version](https://poser.pugx.org/aol/offload/v/unstable)](https://packagist.org/packages/aol/offload)
 [![License](https://poser.pugx.org/aol/offload/license)](https://packagist.org/packages/aol/offload)
