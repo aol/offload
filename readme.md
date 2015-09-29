@@ -175,6 +175,7 @@ Same as `fetch`. The following are equivalent:
 
 ```php
 $result = $offload->fetch($key, $repopulate, ['ttl_fresh' => 5]);
+// is the same as:
 $result = $offload->fetchCached($key, 5, $repopulate);
 ```
 
@@ -194,6 +195,7 @@ Same as `queue`. The following are equivalent:
 
 ```php
 $result = $offload->queue($key, $repopulate, ['ttl_fresh' => 5]);
+// is the same as:
 $result = $offload->queueCached($key, 5, $repopulate);
 ```
 
@@ -202,7 +204,7 @@ $result = $offload->queueCached($key, 5, $repopulate);
 |Option|Type||
 |:---|:---|:---|
 |`$key`|`string`|The key of the data to store.|
-|`$cache_ttl`|`float`|The fresh TTL in seconds for cached data. This is only provided to `queueCached`.|
+|`$cache_ttl`|`float`|The fresh TTL in seconds for cached data. This is only provided to `fetchCached` and `queueCached`.|
 |`$repopulate`|`callable`|A callable that returns data to repopulate cache.|
 |`$options`|`array`|Options for the offload (see **Offload Options**).|
 
