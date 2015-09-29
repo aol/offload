@@ -18,7 +18,8 @@ class OffloadManager implements OffloadInterface
 	/** @var array The default options for this offload manager. */
 	protected $default_options;
 
-	private static $static_default_options = [
+	/** @var array Default options for all offload manager instances. */
+	private static $static_options = [
 		self::OPTION_TTL_FRESH          => 0.0,
 		self::OPTION_TTL_STALE          => 5.0,
 		self::OPTION_EXCLUSIVE          => true,
@@ -39,7 +40,7 @@ class OffloadManager implements OffloadInterface
 	) {
 		$this->cache           = $cache;
 		$this->lock            = $lock;
-		$this->default_options = $default_options + self::$static_default_options;
+		$this->default_options = $default_options + self::$static_options;
 	}
 
 	/**
