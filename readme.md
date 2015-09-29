@@ -3,7 +3,7 @@
 Simplify cached PHP tasks: background refresh, last-known-good, and single writer.
 
 [![Build Status](https://travis-ci.org/aol/offload.svg?branch=master)](https://travis-ci.org/aol/offload)
-[![Coverage Status](https://coveralls.io/repos/aol/offload/badge.png?branch=master)](https://coveralls.io/r/aol/offload?branch=master)
+[![Coverage Status](https://coveralls.io/repos/aol/offload/badge.svg?branch=master&service=github)](https://coveralls.io/github/aol/offload?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/aol/offload/v/stable.png)](https://packagist.org/packages/aol/offload)
 [![Latest Unstable Version](https://poser.pugx.org/aol/offload/v/unstable.png)](https://packagist.org/packages/aol/offload)
 [![License](https://poser.pugx.org/aol/offload/license.png)](https://packagist.org/packages/aol/offload)
