@@ -50,10 +50,9 @@ see **Offload Options**.
 - **No Data** (cache miss): Forces the repopulation to run immediately and that data is then cached and returned.
 
 Offload uses a task queue to keep track of stale cache hits that need to be repopulated. When
-`$offload->drain()` is called, all tasks are run and the cache is repopulated.
-
-This is best to do once the request is completed so that the overhead of repopulating cache does not
-interfere with returning a response to the client quickly. See **Draining the Offload Queue**.
+`$offload->drain()` is called, all tasks are run and the cache is repopulated. This is best to do once the
+request is completed so that the overhead of repopulating cache does not interfere with returning a response
+to the client quickly. See **Draining the Offload Queue**.
 
 ### Exclusive Tasks
 
