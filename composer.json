@@ -1,0 +1,25 @@
+{
+	"name": "aol/offload",
+	"description": "Simplify cached PHP tasks: background refresh, last-known-good, and single writer.",
+	"license": "BSD-3-Clause",
+	"type": "project",
+	"authors": [
+		{
+			"name": "Ralph Khattar",
+			"email": "ralph.khattar@gmail.com"
+		}
+	],
+	"require": {
+		"php": "^5.4"
+	},
+	"require-dev": {
+		"predis/predis": "^1.0",
+		"phpunit/phpunit": "^4.0",
+		"satooshi/php-coveralls": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"Aol\\Offload\\": "src/"
+		}
+	}
+}
