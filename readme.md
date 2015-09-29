@@ -40,6 +40,57 @@ $default_options = [
 $offload = new OffloadManager($cache, $lock, $default_options);
 ```
 
+## How's This Work?
+
+Offload caches data with two timeframes, **fresh** and **stale**. These TTLs can be controlled using options,
+see **Offload Options**.
+
+- **Fresh** (cache hit): Data is immediately returned with **no** repopulation.
+- **Stale** (cache hit, stale): Data is immediately returned and a repopulation is queued.
+- **No Data** (cache miss): Forces the repopulation to run immediately and that data is then cached and returned.
+
+Offload uses a task queue to keep track of stale cache hits that need to be repopulated. When
+`$offload->drain()` is called, all tasks are run and the cache is repopulated.
+
+This is best to do once the request is completed so that the overhead of repopulating cache does not
+interfere with returning a response to the client quickly. See **Draining the Offload Queue**.
+
+### Exclusive Tasks
+
+Tasks are run as `exclusive` by default. This behavior can be changed using options, see **Offload Options**.
+
+Exclusive task repopulation means there will ever only be a single concurrent stale repopulation for a given key.
+This avoids the **rush to repopulate cache** that happens when a cached item expires.
+
+### Draining the Offload Queue
+
+To drain the offload queue properly, it is best to setup a PHP shutdown handler. For example:
+
+```php
+// ...
+
+register_shutdown_function(function () use ($offload) {
+  if ($offload->hasWork()) {
+
+    // Flush all buffers.
+    while (ob_get_level()) {
+      ob_end_flush();
+    }
+    flush();
+
+    // End the request if possible (under PHP FPM).
+    if (function_exists('fastcgi_finish_request')) {
+      fastcgi_finish_request();
+    }
+
+    // Run all tasks in the queue.
+    $offload->drain();
+  }
+});
+```
+
+This ensures the offload tasks will always be run.
+
 ## Deferreds
 
 Offload supports returning deferred tasks from the repopulate callable. This allows several tasks to run in parallel
@@ -198,34 +249,6 @@ The `OffloadResult` class provides the following methods:
 |`getStaleTime()`|How long the data has been stale in seconds. If the value is less than zero, that's how far it is from becoming stale.|
 |`isStale()`|Whether the result is from cache, but is stale.|
 
-## Draining the Offload Queue
-
-To drain the offload queue properly, it is best to setup a PHP shutdown handler. For example:
-
-```php
-// ...
-
-register_shutdown_function(function () use ($offload) {
-  if ($offload->hasWork()) {
-
-    // Flush all buffers.
-    while (ob_get_level()) {
-      ob_end_flush();
-    }
-    flush();
-
-    // End the request if possible (under PHP FPM).
-    if (function_exists('fastcgi_finish_request')) {
-      fastcgi_finish_request();
-    }
-
-    // Run all tasks in the queue.
-    $offload->drain();
-  }
-});
-```
-
-This ensures the offload tasks will always be run.
 
 ## License
 
