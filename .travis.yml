@@ -10,6 +10,7 @@ services:
 
 before_script:
   - composer install
+  - phpenv config-add .travis.php.ini
 
 script:
   - mkdir -p build/logs
