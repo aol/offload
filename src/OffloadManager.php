@@ -78,12 +78,7 @@ class OffloadManager implements OffloadInterface
 	 */
 	public function queueCached($key, $cache_ttl, callable $task, $options = [])
 	{
-		$options = [self::OPTION_TTL_FRESH => $cache_ttl] + $options + $this->default_options;
-		if ($options[self::OPTION_EXCLUSIVE]) {
-			$this->tasks[$key] = [$task, $key, $options];
-		} else {
-			$this->tasks[] = [$task, $key, $options];
-		}
+		$this->queue($key, $task, [self::OPTION_TTL_FRESH => $cache_ttl] + $options);
 	}
 
 	/**
