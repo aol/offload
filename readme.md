@@ -40,6 +40,31 @@ $default_options = [
 $offload = new OffloadManager($cache, $lock, $default_options);
 ```
 
+## Deferreds
+
+Offload supports returning deferred tasks from the repopulate callable. This allows several tasks to run in parallel
+when the offload queue is drained.
+
+For example, using [Guzzle Async Requests](http://guzzle.readthedocs.org/en/latest/quickstart.html#async-requests):
+
+```php
+$data = $offload->fetch('task-key', function () {
+
+  // ...
+
+  $promise = $guzzle_client->getAsync('http://www.example.com');
+
+  return new OffloadDeferred([$promise, 'wait']);
+
+})->getData();
+```
+
+The `OffloadDeferred` class takes a single callable that will wait for the result.
+In the above example, `$promise->wait()` waits for the HTTP request to complete and returns the result.
+
+The repopulate callable can return any class that implements the `OffloadDeferredInterface`, so you can
+make adapters for custom async handling.
+
 ## API
 
 The `OffloadManager` implements `OffloadInterface` and exposes the following methods:
@@ -55,7 +80,6 @@ The `OffloadManager` implements `OffloadInterface` and exposes the following met
 |`get(...)`|Get an item from cache.|
 |`getMany(...)`|Get several items from cache.|
 |`delete(...)`|Delete items from cache.|
-
 
 See below for more details on the above methods.
 
