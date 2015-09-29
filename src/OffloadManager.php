@@ -5,6 +5,7 @@ namespace Aol\Offload;
 use Aol\Offload\Cache\OffloadCacheInterface;
 use Aol\Offload\Deferred\OffloadDeferredComplete;
 use Aol\Offload\Deferred\OffloadDeferredInterface;
+use Aol\Offload\Exceptions\OffloadDrainException;
 use Aol\Offload\Lock\OffloadLockInterface;
 
 class OffloadManager implements OffloadInterface
@@ -132,14 +133,20 @@ class OffloadManager implements OffloadInterface
 	public function drain()
 	{
 		// Drain the task list. Run each task.
-		$drained = [];
-		$results = [];
+		$drained    = [];
+		$exceptions = [];
+		$results    = [];
 		foreach ($this->tasks as $item) {
 			list ($task, $key, $options) = $item;
-			if ($options[self::OPTION_EXCLUSIVE]) {
-				$results[] = [$key, $this->runLocked($key, $task, $options)];
-			} else {
-				$results[] = [$key, $this->run($key, $task, $options)];
+			try {
+				if ($options[self::OPTION_EXCLUSIVE]) {
+					$result = $this->runLocked($key, $task, $options);
+				} else {
+					$result = $this->run($key, $task, $options);
+				}
+				$results[] = [$key, $result];
+			} catch (\Exception $exception) {
+				$exceptions[$key] = $exception;
 			}
 		}
 
@@ -150,8 +157,16 @@ class OffloadManager implements OffloadInterface
 		foreach ($results as $item) {
 			list ($key, $result) = $item;
 			if ($result instanceof OffloadDeferredInterface) {
-				$drained[$key] = $result->wait();
+				try {
+					$drained[$key] = $result->wait();
+				} catch (\Exception $exception) {
+					$exceptions[$key] = $exception;
+				}
 			}
+		}
+
+		if (!empty($exceptions)) {
+			throw new OffloadDrainException(get_class() . ': could_not_drain_all_tasks', $exceptions, $drained);
 		}
 
 		return $drained;

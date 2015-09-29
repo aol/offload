@@ -3,6 +3,7 @@
 namespace Aol\Offload\Tests;
 
 use Aol\Offload\Deferred\OffloadDeferred;
+use Aol\Offload\Exceptions\OffloadDrainException;
 use Aol\Offload\OffloadInterface;
 use Aol\Offload\OffloadManager;
 use Aol\Offload\OffloadRun;
@@ -175,5 +176,29 @@ abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
 			return $defer;
 		});
 		$this->assertEquals($data, $result->getData());
+	}
+
+	public function testDrainExceptions()
+	{
+		$ex1 = new \Exception();
+		$ex2 = new \RuntimeException();
+		$ex3 = new \InvalidArgumentException();
+		$data1 = 1;
+		$data2 = ['hi'];
+		$this->manager->queue('k1', function () use ($ex1) { throw $ex1; });
+		$this->manager->queue('k2', function () use ($data1) { return $data1; });
+		$this->manager->queue('k3', function () use ($ex2) { throw $ex2; });
+		$this->manager->queue('k4', function () use ($data2) { return $data2; });
+		$this->manager->queue('k5', function () use ($ex3) {
+			return new OffloadDeferred(function () use ($ex3) { throw $ex3; });
+		});
+		try {
+			$this->manager->drain();
+		} catch (OffloadDrainException $ex) {
+			$this->assertEquals(['k1'=>$ex1, 'k3'=>$ex2, 'k5'=>$ex3], $ex->getDrainedExceptions());
+			$this->assertEquals(['k2'=>$data1, 'k4'=>$data2], $ex->getDrainedResults());
+			return;
+		}
+		$this->fail('Expected OffloadDrainException');
 	}
 }

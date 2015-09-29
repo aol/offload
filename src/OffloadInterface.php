@@ -2,6 +2,8 @@
 
 namespace Aol\Offload;
 
+use Aol\Offload\Exceptions\OffloadDrainException;
+
 interface OffloadInterface
 {
 	const OPTION_TTL_FRESH          = 'ttl_fresh';
@@ -90,6 +92,8 @@ interface OffloadInterface
 	 * Drain all work in this offload manager.
 	 *
 	 * @return array The keys that were drained. A map of key to result.
+	 *
+	 * @throws OffloadDrainException When there were errors draining results.
 	 */
 	function drain();
 }
