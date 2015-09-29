@@ -1,6 +1,6 @@
 # Offload
 
-Simplify cached PHP tasks: background refresh, last-known-good, and single writer. Offload simplifies running cached PHP tasks in the background, after the current request has completed.
+Simplify cached PHP tasks: background refresh, last-known-good, and single writer.
 
 Example:
 
