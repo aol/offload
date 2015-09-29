@@ -16,7 +16,36 @@ $data = $offload->fetch('task-key', function () {
 })->getData();
 ```
 
-This will run a task in the background and cache the returned `$data` under the `task-key`. If the data is requested again, it will be returned immediately if in cache and a repopulation will be offload if the cache is stale.
+This will run a task in the background and cache the returned `$data` under the `task-key`.
+If the data is requested again, it will be returned immediately if in cache and a repopulation will be offload if the cache is stale.
+
+## How's This Work?
+
+Offload caches data with two timeframes, **fresh** and **stale**. These TTLs can be controlled using options,
+see **Offload Options**.
+
+- **Fresh** (cache hit): Data is immediately returned with **no** repopulation.
+- **Stale** (cache hit, stale): Data is immediately returned and a repopulation is queued.
+- **No Data** (cache miss): Forces the repopulation to run immediately and that data is then cached and returned.
+
+Offload uses a task queue to keep track of stale cache hits that need to be repopulated. When
+`$offload->drain()` is called, all tasks are run and the cache is repopulated. This is best to do once the
+request is completed so that the overhead of repopulating cache does not interfere with returning a response
+to the client quickly. See **Draining the Offload Queue**.
+
+The `OffloadManager` can take any cache store implementing `OffloadCacheInterface`.
+
+### Exclusive Tasks
+
+Tasks are run as `exclusive` by default. This behavior can be changed using options, see **Offload Options**.
+
+Exclusive task repopulation means there will ever only be a single concurrent stale repopulation for a given key.
+This avoids the **rush to repopulate cache** that happens when a cached item expires.
+
+The `OffloadManager` uses a lock implementation to provide this capability and can take any lock
+implementing `OffloadLockInterface`.
+
+### Initialization
 
 Here is an example of using a memcached instance for caching and a redis instance for locking:
 
@@ -39,27 +68,6 @@ $default_options = [
 // Create the offload manager.
 $offload = new OffloadManager($cache, $lock, $default_options);
 ```
-
-## How's This Work?
-
-Offload caches data with two timeframes, **fresh** and **stale**. These TTLs can be controlled using options,
-see **Offload Options**.
-
-- **Fresh** (cache hit): Data is immediately returned with **no** repopulation.
-- **Stale** (cache hit, stale): Data is immediately returned and a repopulation is queued.
-- **No Data** (cache miss): Forces the repopulation to run immediately and that data is then cached and returned.
-
-Offload uses a task queue to keep track of stale cache hits that need to be repopulated. When
-`$offload->drain()` is called, all tasks are run and the cache is repopulated. This is best to do once the
-request is completed so that the overhead of repopulating cache does not interfere with returning a response
-to the client quickly. See **Draining the Offload Queue**.
-
-### Exclusive Tasks
-
-Tasks are run as `exclusive` by default. This behavior can be changed using options, see **Offload Options**.
-
-Exclusive task repopulation means there will ever only be a single concurrent stale repopulation for a given key.
-This avoids the **rush to repopulate cache** that happens when a cached item expires.
 
 ### Draining the Offload Queue
 
