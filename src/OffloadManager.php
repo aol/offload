@@ -47,8 +47,7 @@ class OffloadManager implements OffloadInterface
 	 */
 	public function fetch($key, callable $repopulate, $options = [])
 	{
-		$options = $options + $this->default_options;
-		return $this->refresh($key, $repopulate, $options);
+		return $this->refresh($key, $repopulate, $options + $this->default_options);
 	}
 
 	/**
@@ -56,8 +55,7 @@ class OffloadManager implements OffloadInterface
 	 */
 	public function fetchCached($key, $cache_ttl, callable $repopulate, $options = [])
 	{
-		$options = [self::OPTION_TTL_FRESH => $cache_ttl] + $options + $this->default_options;
-		return $this->refresh($key, $repopulate, $options);
+		return $this->fetch($key, $repopulate, [self::OPTION_TTL_FRESH => $cache_ttl] + $options);
 	}
 
 	/**
