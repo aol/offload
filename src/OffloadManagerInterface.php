@@ -27,13 +27,13 @@ interface OffloadManagerInterface
 	 * Fetch a value from cache, if not present, offload a repopulate for the cache.
 	 *
 	 * @param string   $key        The key to fetch.
-	 * @param float    $cache_ttl  How long to cache the value before repopulating.
+	 * @param float    $ttl_fresh  How long to cache the value before repopulating.
 	 * @param callable $repopulate The repopulate callable.
 	 * @param array    $options    Additional offload options.
 	 *
 	 * @return OffloadResult The offload result.
 	 */
-	function fetchCached($key, $cache_ttl, callable $repopulate, $options = []);
+	function fetchCached($key, $ttl_fresh, callable $repopulate, $options = []);
 
 	/**
 	 * Queue a task to run when the offload manager is drained.
@@ -50,11 +50,11 @@ interface OffloadManagerInterface
 	 * Cache the task result in the given key.
 	 *
 	 * @param string   $key       A key for the task.
-	 * @param float    $cache_ttl How long to cache the task result for.
+	 * @param float    $ttl_fresh How long to cache the task result for.
 	 * @param callable $task      The task to run.
 	 * @param array    $options   Options for the task.
 	 */
-	function queueCached($key, $cache_ttl, callable $task, $options = []);
+	function queueCached($key, $ttl_fresh, callable $task, $options = []);
 
 	/**
 	 * Get the offload manager cache.

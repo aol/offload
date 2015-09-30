@@ -167,7 +167,7 @@ $result = $offload->fetch($key, function () {
 
 #### `fetchCached`
 
-`fetchCached($key, $cache_ttl, callable $repopulate, array $options = []): OffloadResult`
+`fetchCached($key, $ttl_fresh, callable $repopulate, array $options = []): OffloadResult`
 
 Same as `fetch`. The following are equivalent:
 
@@ -187,7 +187,7 @@ Queue a repopuate task to be run. Do not check cache. Takes similar options as `
 
 #### `queueCached`
 
-`queueCached($key, $cache_ttl, callable $repopulate, array $options = []): void`
+`queueCached($key, $ttl_fresh, callable $repopulate, array $options = []): void`
 
 Same as `queue`. The following are equivalent:
 
@@ -202,7 +202,7 @@ $result = $offload->queueCached($key, 5, $repopulate);
 |Option|Type||
 |:---|:---|:---|
 |`$key`|`string`|The key of the data to store.|
-|`$cache_ttl`|`float`|The fresh TTL in seconds for cached data. This is only provided to `fetchCached` and `queueCached`.|
+|`$ttl_fresh`|`float`|The fresh TTL in seconds for cached data. This is only provided to `fetchCached` and `queueCached`.|
 |`$repopulate`|`callable`|A callable that returns data to repopulate cache.|
 |`$options`|`array`|Options for the offload (see **Offload Options**).|
 
