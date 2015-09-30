@@ -138,7 +138,7 @@ The `OffloadManager` implements `OffloadManagerInterface` and exposes the follow
 |`fetch(...)`|Fetch data from cache and repopulate if necessary.|
 |`fetchCached(...)`|Same as `fresh(...)` with a specific fresh cache TTL.|
 |`queue(...)`|Queue a task to run.|
-|`queueCached(...)`|Same as `queueCached(...)` with a specific fresh cache TTL.|
+|`queueCached(...)`|Same as `queue(...)` with a specific fresh cache TTL.|
 |`hasWork()`|Whether the offload manager has work.|
 |`drain()`|Drain the offload manager task queue.|
 |`getCache()`|An object for interacting with the cache manually.|
