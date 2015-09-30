@@ -8,9 +8,9 @@ use Aol\Offload\Deferred\OffloadDeferredInterface;
 use Aol\Offload\Exceptions\OffloadDrainException;
 use Aol\Offload\Lock\OffloadLockInterface;
 
-class OffloadManager implements OffloadInterface
+class OffloadManager implements OffloadManagerInterface
 {
-	/** @var OffloadCacheInterface The underlying cache. */
+	/** @var OffloadManagerCacheInterface The offload manager cache. */
 	protected $cache;
 	/** @var OffloadLockInterface The lock. */
 	protected $lock;
@@ -39,7 +39,7 @@ class OffloadManager implements OffloadInterface
 		OffloadLockInterface $lock,
 		array $default_options = []
 	) {
-		$this->cache           = $cache;
+		$this->cache           = new OffloadManagerCache($cache);
 		$this->lock            = $lock;
 		$this->default_options = $default_options + self::$static_options;
 	}
@@ -84,39 +84,9 @@ class OffloadManager implements OffloadInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function get($key)
+	public function getCache()
 	{
-		$cached = $this->cache->get($key);
-		if ($cached !== null) {
-			list ($data, $exp) = $cached;
-			return new OffloadResult($data, true, $exp);
-		} else {
-			return new OffloadResult(null, false, 0);
-		}
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function getMany(array $keys)
-	{
-		$cached = $this->cache->getMany($keys);
-		return array_map(function ($cached) {
-			if ($cached !== null) {
-				list ($data, $exp) = $cached;
-				return new OffloadResult($data, true, $exp);
-			} else {
-				return new OffloadResult(null, false, 0);
-			}
-		}, $cached);
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function delete(array $keys)
-	{
-		return $this->cache->delete($keys);
+		return $this->cache;
 	}
 
 	/**
@@ -184,31 +154,29 @@ class OffloadManager implements OffloadInterface
 	protected function refresh($key, callable $repopulate, $options = [])
 	{
 		// Check cache as long as there is a cache time set.
-		$cached = null;
 		if ($options[self::OPTION_TTL_STALE] || $options[self::OPTION_TTL_FRESH]) {
-			$cached = $this->cache->get($key);
+			$result = $this->cache->get($key);
+		} else {
+			$result = OffloadResult::miss();
 		}
 
-		$data  = null;
-		$exp   = 0;
-		$stale = false;
-		if ($cached !== null) {
-			list ($data, $exp) = $cached;
-			$stale = time() >= $exp;
-		}
+		$from_cache = $result->isFromCache();
+		$stale      = $result->isStale();
 
-		// If there is no data in cache or the data is stale and background fetch is turned off,
-		// run the repopulate immediately and cache the results.
-		if ($cached === null || ($stale && !$options[self::OPTION_BACKGROUND])) {
+		if (!$from_cache || ($stale && !$options[self::OPTION_BACKGROUND])) {
+
+			// If there is no data in cache or the data is stale and background fetch is turned off,
+			// run the repopulate immediately and cache the results.
 			$data = $this->run($key, $repopulate, $options)->wait();
-			return new OffloadResult($data, false, 0);
-		}
+			$result = new OffloadResult($data, false, 0);
 
-		// If there is data in cache and the data is stale, queue a background repopulate.
-		if ($stale) {
+		} elseif ($stale) {
+
+			// If there is data in cache and the data is stale, queue a background repopulate.
 			$this->queue($key, $repopulate, $options);
 		}
-		return new OffloadResult($data, true, $exp);
+
+		return $result;
 	}
 
 	/**
@@ -236,9 +204,7 @@ class OffloadManager implements OffloadInterface
 		if ($ttl_fresh || $ttl_stale) {
 			$result->then(function ($data) use ($key, $run, $ttl_fresh, $ttl_stale) {
 				if (!$run->isBad()) {
-					$exp = time() + (int)$ttl_fresh;
-					$ttl = $ttl_fresh + $ttl_stale;
-					$this->cache->set($key, [$data, $exp], $ttl);
+					$this->cache->set($key, $data, $ttl_fresh, $ttl_stale);
 				}
 			});
 		}

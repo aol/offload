@@ -131,7 +131,7 @@ make adapters for custom async handling.
 
 ## API
 
-The `OffloadManager` implements `OffloadInterface` and exposes the following methods:
+The `OffloadManager` implements `OffloadManagerInterface` and exposes the following methods:
 
 |`OffloadManager`||
 |:---|:---|
@@ -141,9 +141,7 @@ The `OffloadManager` implements `OffloadInterface` and exposes the following met
 |`queueCached(...)`|Same as `queueCached(...)` with a specific fresh cache TTL.|
 |`hasWork(...)`|Whether the offload manager has work.|
 |`drain(...)`|Drain the offload manager task queue.|
-|`get(...)`|Get an item from cache.|
-|`getMany(...)`|Get several items from cache.|
-|`delete(...)`|Delete items from cache.|
+|`getCache()`|An object for interacting with the cache manually.|
 
 See below for more details on the above methods.
 

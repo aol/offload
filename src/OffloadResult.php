@@ -10,6 +10,8 @@ class OffloadResult
 	protected $from_cache;
 	/** @var int When the data expires. */
 	protected $expires;
+	/** @var OffloadResult A cache miss. */
+	private static $miss;
 
 	/**
 	 * Create a new offload result.
@@ -64,5 +66,13 @@ class OffloadResult
 	public function isStale()
 	{
 		return $this->from_cache && $this->getStaleTime() >= 0;
+	}
+
+	/**
+	 * @return OffloadResult A cache miss.
+	 */
+	public static function miss()
+	{
+		return self::$miss ?: (self::$miss = new OffloadResult(null, false, 0));
 	}
 }

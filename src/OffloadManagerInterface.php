@@ -4,7 +4,7 @@ namespace Aol\Offload;
 
 use Aol\Offload\Exceptions\OffloadDrainException;
 
-interface OffloadInterface
+interface OffloadManagerInterface
 {
 	const OPTION_TTL_FRESH          = 'ttl_fresh';
 	const OPTION_TTL_STALE          = 'ttl_stale';
@@ -57,31 +57,11 @@ interface OffloadInterface
 	function queueCached($key, $cache_ttl, callable $task, $options = []);
 
 	/**
-	 * Check to see if a value is in the offload cache.
+	 * Get the offload manager cache.
 	 *
-	 * @param string $key The key to check.
-	 *
-	 * @return OffloadResult The offload result.
+	 * @return OffloadManagerCacheInterface The offload manager cache.
 	 */
-	function get($key);
-
-	/**
-	 * Check to see if values are in the offload cache.
-	 *
-	 * @param string[] $keys The ordered keys to check.
-	 *
-	 * @return OffloadResult[] The ordered offload results.
-	 */
-	function getMany(array $keys);
-
-	/**
-	 * Delete the given keys from cache.
-	 *
-	 * @param string[] $keys The keys to delete.
-	 *
-	 * @return int The number of keys deleted.
-	 */
-	function delete(array $keys);
+	function getCache();
 
 	/**
 	 * @return bool Whether this offload manager has queued work.

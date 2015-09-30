@@ -4,7 +4,7 @@ namespace Aol\Offload\Tests;
 
 use Aol\Offload\Deferred\OffloadDeferred;
 use Aol\Offload\Exceptions\OffloadDrainException;
-use Aol\Offload\OffloadInterface;
+use Aol\Offload\OffloadManagerInterface;
 use Aol\Offload\OffloadManager;
 use Aol\Offload\OffloadRun;
 
@@ -30,7 +30,8 @@ abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
 		$result = $this->manager->fetch(__METHOD__, function () use ($data) { return $data; });
 		$this->assertEquals($data, $result->getData());
 		$this->assertTrue($result->isFromCache());
-		$this->assertTrue($result->isStale());
+		$this->assertGreaterThanOrEqual($result->getExpireTime(), time());
+		$this->assertTrue($result->isStale(), 'asd');
 	}
 
 	public function testFetchCachedFresh()
@@ -82,8 +83,8 @@ abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
 	{
 		$invoked = 0;
 		$increment_invoked = function () use (&$invoked) { return $invoked++; };
-		$this->manager->queue(__METHOD__, $increment_invoked, [OffloadInterface::OPTION_EXCLUSIVE => false]);
-		$this->manager->queue(__METHOD__, $increment_invoked, [OffloadInterface::OPTION_EXCLUSIVE => false]);
+		$this->manager->queue(__METHOD__, $increment_invoked, [OffloadManagerInterface::OPTION_EXCLUSIVE => false]);
+		$this->manager->queue(__METHOD__, $increment_invoked, [OffloadManagerInterface::OPTION_EXCLUSIVE => false]);
 		$this->manager->drain();
 		$this->assertEquals(2, $invoked);
 	}
@@ -102,8 +103,8 @@ abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
 	{
 		$invoked = 0;
 		$increment_invoked = function () use (&$invoked) { return $invoked++; };
-		$this->manager->queueCached(__METHOD__, 1, $increment_invoked, [OffloadInterface::OPTION_EXCLUSIVE => false]);
-		$this->manager->queueCached(__METHOD__, 1, $increment_invoked, [OffloadInterface::OPTION_EXCLUSIVE => false]);
+		$this->manager->queueCached(__METHOD__, 1, $increment_invoked, [OffloadManagerInterface::OPTION_EXCLUSIVE => false]);
+		$this->manager->queueCached(__METHOD__, 1, $increment_invoked, [OffloadManagerInterface::OPTION_EXCLUSIVE => false]);
 		$this->manager->drain();
 		$this->assertEquals(2, $invoked);
 	}
@@ -113,7 +114,7 @@ abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
 		$data = __METHOD__ . time() . rand(0, 100);
 		$task = function () use ($data) { return $data; };
 		$this->manager->fetchCached(__METHOD__, 5, $task);
-		$result = $this->manager->get(__METHOD__);
+		$result = $this->manager->getCache()->get(__METHOD__);
 		$this->assertEquals($data, $result->getData());
 	}
 
@@ -123,7 +124,7 @@ abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
 		$task = function () use ($data) { return $data; };
 		$this->manager->fetchCached(__METHOD__ . '1', 5, $task);
 		$this->manager->fetchCached(__METHOD__ . '2', 5, $task);
-		$result = $this->manager->getMany([__METHOD__ . '1', __METHOD__ . 'X', __METHOD__ . '2']);
+		$result = $this->manager->getCache()->getMany([__METHOD__ . '1', __METHOD__ . 'X', __METHOD__ . '2']);
 		$this->assertTrue(is_array($result));
 		$this->assertEquals(3, count($result));
 		$this->assertEquals($data, $result[0]->getData());
@@ -138,16 +139,16 @@ abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
 		$task = function () use ($data) { return $data; };
 		$this->manager->fetchCached(__METHOD__ . '1', 5, $task);
 		$this->manager->fetchCached(__METHOD__ . '2', 5, $task);
-		$this->assertTrue($this->manager->get(__METHOD__ . '1')->isFromCache());
-		$this->assertTrue($this->manager->get(__METHOD__ . '2')->isFromCache());
-		$this->assertEquals(2, $this->manager->delete([__METHOD__ . '1', __METHOD__ . '2']));
-		$this->assertFalse($this->manager->get(__METHOD__ . '1')->isFromCache());
-		$this->assertFalse($this->manager->get(__METHOD__ . '2')->isFromCache());
+		$this->assertTrue($this->manager->getCache()->get(__METHOD__ . '1')->isFromCache());
+		$this->assertTrue($this->manager->getCache()->get(__METHOD__ . '2')->isFromCache());
+		$this->assertEquals(2, $this->manager->getCache()->delete([__METHOD__ . '1', __METHOD__ . '2']));
+		$this->assertFalse($this->manager->getCache()->get(__METHOD__ . '1')->isFromCache());
+		$this->assertFalse($this->manager->getCache()->get(__METHOD__ . '2')->isFromCache());
 	}
 
 	public function testGetCacheMiss()
 	{
-		$result = $this->manager->get(__METHOD__);
+		$result = $this->manager->getCache()->get(__METHOD__);
 		$this->assertNull($result->getData());
 		$this->assertFalse($result->isFromCache());
 	}
