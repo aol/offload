@@ -28,7 +28,7 @@ class OffloadManagerCache implements OffloadManagerCacheInterface
 	public function get($key)
 	{
 		$cached = $this->cache->get($key);
-		if ($cached !== null) {
+		if (is_array($cached) && count($cached) === 2) {
 			list ($data, $exp) = $cached;
 			return new OffloadResult($data, true, $exp);
 		} else {
@@ -43,7 +43,7 @@ class OffloadManagerCache implements OffloadManagerCacheInterface
 	{
 		$cached = $this->cache->getMany($keys);
 		return array_map(function ($cached) {
-			if ($cached !== null) {
+			if (is_array($cached) && count($cached) === 2) {
 				list ($data, $exp) = $cached;
 				return new OffloadResult($data, true, $exp);
 			} else {
