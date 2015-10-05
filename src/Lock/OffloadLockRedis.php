@@ -21,7 +21,7 @@ class OffloadLockRedis implements OffloadLockInterface
 	public function lock($key, $timeout_seconds)
 	{
 		$result = $this->client->set($key, '1', 'PX', (int)(1000 * $timeout_seconds), 'NX');
-		$ok     = $result === true || ($result === \Predis\Response\Status::get('OK'));
+		$ok     = $result === true || @strval($result) === 'OK';
 		return $ok ? $key : null;
 	}
 
