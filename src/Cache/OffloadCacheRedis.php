@@ -54,7 +54,7 @@ class OffloadCacheRedis implements OffloadCacheInterface
 		$serialized = $this->serialize($value);
 		$command    = $this->write->createCommand('SET', [$key, $serialized, 'PX', (int)(1000 * $ttl_seconds)]);
 		$result     = $this->write->executeCommand($command);
-		$ok         = $result === true || ($result === \Predis\Response\Status::get('OK'));
+		$ok         = $result === true || @strval($result) === 'OK';
 		return $ok;
 	}
 
