@@ -44,7 +44,7 @@ interface OffloadCacheInterface
 	 *
 	 * @param string[] $keys The keys to delete.
 	 *
-	 * @return bool Whether the delete was successful.
+	 * @return int The number of keys deleted.
 	 */
 	function delete(array $keys);
 }
