@@ -25,7 +25,8 @@ class OffloadManager implements OffloadManagerInterface
 		self::OPTION_TTL_STALE          => 5.0,
 		self::OPTION_EXCLUSIVE          => true,
 		self::OPTION_BACKGROUND         => true,
-		self::OPTION_BACKGROUND_TIMEOUT => 5.0
+		self::OPTION_BACKGROUND_TIMEOUT => 5.0,
+		self::OPTION_CACHE_OPTIONS      => []
 	];
 
 	/**
@@ -155,7 +156,8 @@ class OffloadManager implements OffloadManagerInterface
 	{
 		// Check cache as long as there is a cache time set.
 		if ($options[self::OPTION_TTL_STALE] || $options[self::OPTION_TTL_FRESH]) {
-			$result = $this->cache->get($key);
+			$cache_options = empty($options[self::OPTION_CACHE_OPTIONS]) ? [] : $options[self::OPTION_CACHE_OPTIONS];
+			$result = $this->cache->get($key, $cache_options);
 		} else {
 			$result = OffloadResult::miss();
 		}
@@ -190,7 +192,8 @@ class OffloadManager implements OffloadManagerInterface
 	 */
 	protected function run($key, $task, $options)
 	{
-		$run  = new OffloadRun();
+		$run = new OffloadRun();
+		$run->setCacheOptions(empty($options[self::OPTION_CACHE_OPTIONS]) ? [] : $options[self::OPTION_CACHE_OPTIONS]);
 		$data = $task($run);
 		if ($data instanceof OffloadDeferredInterface) {
 			$result = $data;
@@ -204,7 +207,7 @@ class OffloadManager implements OffloadManagerInterface
 		if ($ttl_fresh || $ttl_stale) {
 			$result->then(function ($data) use ($key, $run, $ttl_fresh, $ttl_stale) {
 				if (!$run->isBad()) {
-					$this->cache->set($key, $data, $ttl_fresh, $ttl_stale);
+					$this->cache->set($key, $data, $ttl_fresh, $ttl_stale, $run->getCacheOptions());
 				}
 			});
 		}

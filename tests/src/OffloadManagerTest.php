@@ -120,7 +120,7 @@ abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
 			OffloadManager::OPTION_TTL_FRESH => 0,
 			OffloadManager::OPTION_TTL_STALE => 0
 		]);
-		$this->assertInstanceOf(OffloadResult::class, $result);
+		$this->assertTrue($result instanceof OffloadResult);
 		$this->assertEquals($value, $result->getData());
 	}
 
