@@ -25,9 +25,9 @@ class OffloadManagerCache implements OffloadManagerCacheInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function get($key)
+	public function get($key, array $options = [])
 	{
-		$cached = $this->cache->get($key);
+		$cached = $this->cache->get($key, $options);
 		if (is_array($cached) && count($cached) === 2) {
 			list ($data, $exp) = $cached;
 			return new OffloadResult($data, true, $exp);
@@ -39,9 +39,9 @@ class OffloadManagerCache implements OffloadManagerCacheInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function getMany(array $keys)
+	public function getMany(array $keys, array $options = [])
 	{
-		$cached = $this->cache->getMany($keys);
+		$cached = $this->cache->getMany($keys, $options);
 		return array_map(function ($cached) {
 			if (is_array($cached) && count($cached) === 2) {
 				list ($data, $exp) = $cached;
@@ -55,18 +55,26 @@ class OffloadManagerCache implements OffloadManagerCacheInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function delete(array $keys)
+	public function delete(array $keys, array $options = [])
 	{
-		return $this->cache->delete($keys);
+		return $this->cache->delete($keys, $options);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function set($key, $data, $ttl_fresh_seconds, $ttl_stale_seconds)
+	public function set($key, $data, $ttl_fresh_seconds, $ttl_stale_seconds, array $options = [])
 	{
 		$exp = time() + (int)$ttl_fresh_seconds;
 		$ttl = $ttl_fresh_seconds + $ttl_stale_seconds;
-		return $this->cache->set($key, [$data, $exp], $ttl);
+		return $this->cache->set($key, [$data, $exp], $ttl, $options);
+	}
+
+	/**
+	 * @return OffloadCacheInterface The underlying cache being used.
+	 */
+	public function getBaseCache()
+	{
+		return $this->cache;
 	}
 }

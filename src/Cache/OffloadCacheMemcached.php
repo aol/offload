@@ -27,7 +27,7 @@ class OffloadCacheMemcached implements OffloadCacheInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function get($key)
+	public function get($key, array $options = [])
 	{
 		$result = $this->read->get($key);
 		$result = $this->read->getResultCode() !== \Memcached::RES_SUCCESS ? null : $result;
@@ -38,7 +38,7 @@ class OffloadCacheMemcached implements OffloadCacheInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function getMany(array $keys)
+	public function getMany(array $keys, array $options = [])
 	{
 		$null   = null;
 		$result = $this->read->getMulti($keys, $null, \Memcached::GET_PRESERVE_ORDER);
@@ -51,7 +51,7 @@ class OffloadCacheMemcached implements OffloadCacheInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function set($key, $value, $ttl_seconds)
+	public function set($key, $value, $ttl_seconds, array $options = [])
 	{
 		$serialized = $this->serialize($value);
 		$result     = $this->write->set($key, $serialized, (int)$ttl_seconds);
@@ -61,7 +61,7 @@ class OffloadCacheMemcached implements OffloadCacheInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function delete(array $keys)
+	public function delete(array $keys, array $options = [])
 	{
 		$result = $this->write->deleteMulti($keys);
 		return $result ? count($keys) : 0;

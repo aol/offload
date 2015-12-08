@@ -13,6 +13,7 @@ class OffloadManagerMemcachedTest extends OffloadManagerTest
 		$client = new \Memcached();
 		$client->addServer('localhost', 11211);
 		$client->flush();
-		$this->manager = new OffloadManager(new OffloadCacheMemcached($client), new OffloadLockMemcached($client));
+		$this->base_cache = new OffloadCacheMemcached($client);
+		$this->manager = new OffloadManager($this->base_cache, new OffloadLockMemcached($client));
 	}
 }

@@ -12,6 +12,7 @@ class OffloadManagerRedisTest extends OffloadManagerTest
 	{
 		$client = new \Predis\Client();
 		$client->flushdb();
-		$this->manager = new OffloadManager(new OffloadCacheRedis($client), new OffloadLockRedis($client));
+		$this->base_cache = new OffloadCacheRedis($client);
+		$this->manager = new OffloadManager($this->base_cache, new OffloadLockRedis($client));
 	}
 }

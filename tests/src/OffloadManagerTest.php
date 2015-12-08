@@ -2,16 +2,20 @@
 
 namespace Aol\Offload\Tests;
 
+use Aol\Offload\Cache\OffloadCacheInterface;
 use Aol\Offload\Deferred\OffloadDeferred;
 use Aol\Offload\Exceptions\OffloadDrainException;
 use Aol\Offload\OffloadManagerInterface;
 use Aol\Offload\OffloadManager;
+use Aol\Offload\OffloadResult;
 use Aol\Offload\OffloadRun;
 
 abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
 {
 	/** @var OffloadManager */
 	protected $manager;
+	/** @var OffloadCacheInterface */
+	protected $base_cache;
 
 	public function testFetch()
 	{
@@ -107,6 +111,22 @@ abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
 		$this->manager->queueCached(__METHOD__, 1, $increment_invoked, [OffloadManagerInterface::OPTION_EXCLUSIVE => false]);
 		$this->manager->drain();
 		$this->assertEquals(2, $invoked);
+	}
+
+	public function testFetchMissZeroCacheTime()
+	{
+		$value = 'hey';
+		$result = $this->manager->fetch(__METHOD__, function () use ($value) { return $value; }, [
+			OffloadManager::OPTION_TTL_FRESH => 0,
+			OffloadManager::OPTION_TTL_STALE => 0
+		]);
+		$this->assertInstanceOf(OffloadResult::class, $result);
+		$this->assertEquals($value, $result->getData());
+	}
+
+	public function testBaseCache()
+	{
+		$this->assertEquals($this->base_cache, $this->manager->getCache()->getBaseCache());
 	}
 
 	public function testGetCacheHit()

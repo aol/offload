@@ -27,7 +27,7 @@ class OffloadCacheRedis implements OffloadCacheInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function get($key)
+	public function get($key, array $options = [])
 	{
 		$command = $this->read->createCommand('GET', [$key]);
 		$result  = $this->read->executeCommand($command);
@@ -38,7 +38,7 @@ class OffloadCacheRedis implements OffloadCacheInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function getMany(array $keys)
+	public function getMany(array $keys, array $options = [])
 	{
 		$command = $this->read->createCommand('MGET', $keys);
 		$result  = $this->read->executeCommand($command);
@@ -49,7 +49,7 @@ class OffloadCacheRedis implements OffloadCacheInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function set($key, $value, $ttl_seconds)
+	public function set($key, $value, $ttl_seconds, array $options = [])
 	{
 		$serialized = $this->serialize($value);
 		$command    = $this->write->createCommand('SET', [$key, $serialized, 'PX', (int)(1000 * $ttl_seconds)]);
@@ -61,7 +61,7 @@ class OffloadCacheRedis implements OffloadCacheInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function delete(array $keys)
+	public function delete(array $keys, array $options = [])
 	{
 		$command = $this->write->createCommand('DEL', $keys);
 		$result  = $this->write->executeCommand($command);
