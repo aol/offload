@@ -6,12 +6,13 @@ use Aol\Offload\Exceptions\OffloadDrainException;
 
 interface OffloadManagerInterface
 {
-	const OPTION_TTL_FRESH          = 'ttl_fresh';
-	const OPTION_TTL_STALE          = 'ttl_stale';
-	const OPTION_EXCLUSIVE          = 'exclusive';
-	const OPTION_BACKGROUND         = 'background';
-	const OPTION_BACKGROUND_TIMEOUT = 'background_timeout';
-	const OPTION_CACHE_OPTIONS      = 'cache_options';
+	const OPTION_TTL_FRESH               = 'ttl_fresh';
+	const OPTION_TTL_STALE               = 'ttl_stale';
+	const OPTION_EXCLUSIVE               = 'exclusive';
+	const OPTION_BACKGROUND              = 'background';
+	const OPTION_BACKGROUND_TIMEOUT      = 'background_timeout';
+	const OPTION_BACKGROUND_RELEASE_LOCK = 'background_release_lock';
+	const OPTION_CACHE_OPTIONS           = 'cache_options';
 
 	/**
 	 * Fetch a value from cache, if not present, offload a repopulate for the cache.

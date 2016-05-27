@@ -249,6 +249,7 @@ $result = $offload->fetch($key, function () { /* ... */ }, $options);
 |`exclusive`|Whether to run the task exclusively (no other tasks for the same key can run concurrently). Defaults to `true`.|
 |`background`|Whether to run the task in the background. This means it will wait until the offload manager is drained instead of repopulating immediately. Defaults to `true`.|
 |`background_timeout`|How long to timeout exclusive background tasks in seconds. Defaults to `5`.|
+|`background_release_lock`|Whether to release the repopulate lock as soon as the offloaded task is complete. Defaults to `true`. If set to `false`, offload will wait until the background timeout completes before allowing new repopulates.|
 
 ### Offload Result
 

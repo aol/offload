@@ -21,12 +21,13 @@ class OffloadManager implements OffloadManagerInterface
 
 	/** @var array Default options for all offload manager instances. */
 	private static $static_options = [
-		self::OPTION_TTL_FRESH          => 0.0,
-		self::OPTION_TTL_STALE          => 5.0,
-		self::OPTION_EXCLUSIVE          => true,
-		self::OPTION_BACKGROUND         => true,
-		self::OPTION_BACKGROUND_TIMEOUT => 5.0,
-		self::OPTION_CACHE_OPTIONS      => []
+		self::OPTION_TTL_FRESH               => 0.0,
+		self::OPTION_TTL_STALE               => 5.0,
+		self::OPTION_EXCLUSIVE               => true,
+		self::OPTION_BACKGROUND              => true,
+		self::OPTION_BACKGROUND_TIMEOUT      => 5.0,
+		self::OPTION_BACKGROUND_RELEASE_LOCK => true,
+		self::OPTION_CACHE_OPTIONS           => []
 	];
 
 	/**
@@ -231,9 +232,11 @@ class OffloadManager implements OffloadManagerInterface
 		$token  = $this->lock->lock("$key:lock", $options[self::OPTION_BACKGROUND_TIMEOUT]);
 		if ($token !== null) {
 			$result = $this->run($key, $task, $options);
-			$result->then(function () use ($token) {
-				$this->lock->unlock($token);
-			});
+			if ($options[self::OPTION_BACKGROUND_RELEASE_LOCK]) {
+				$result->then(function () use ($token) {
+					$this->lock->unlock($token);
+				});
+			}
 		}
 		return $result;
 	}
