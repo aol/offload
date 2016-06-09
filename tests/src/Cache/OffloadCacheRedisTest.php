@@ -4,7 +4,7 @@ namespace Aol\Offload\Tests\Cache;
 
 use Aol\Offload\Cache\OffloadCacheRedis;
 
-class OffloadLockRedisTest extends OffloadCacheTest
+class OffloadCacheRedisTest extends OffloadCacheTest
 {
 	protected function setUp()
 	{
