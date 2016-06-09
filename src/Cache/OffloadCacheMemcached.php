@@ -41,10 +41,12 @@ class OffloadCacheMemcached implements OffloadCacheInterface
 	public function getMany(array $keys, array $options = [])
 	{
 		$null   = null;
-		$result = $this->read->getMulti($keys, $null, \Memcached::GET_PRESERVE_ORDER);
-		$result = empty($result) ? null : array_values($result);
-		$valid  = $result && $this->read->getResultCode() === \Memcached::RES_SUCCESS;
-		$values = $valid ? array_map([$this, 'unserialize'], $result) : array_fill(0, count($keys), null);
+		$result = $this->read->getMulti($keys, $null);
+		$valid  = $result && is_array($result) && $this->read->getResultCode() === \Memcached::RES_SUCCESS;
+		$values = [];
+		foreach ($keys as $key) {
+			$values[] = ($valid && isset($result[$key])) ? $this->unserialize($result[$key]) : null;
+		}
 		return $values;
 	}
 
