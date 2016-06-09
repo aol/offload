@@ -173,6 +173,14 @@ abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($result->isFromCache());
 	}
 
+	public function testCacheExpires()
+	{
+		$this->manager->getCache()->set(__METHOD__, '1', 0.5, 0.5);
+		$this->assertEquals('1', $this->manager->getCache()->get(__METHOD__)->getData());
+		sleep(1);
+		$this->assertFalse($this->manager->getCache()->get(__METHOD__)->isFromCache());
+	}
+
 	public function testRealDeferred()
 	{
 		$data = __METHOD__ . time() . rand(0, 100);
