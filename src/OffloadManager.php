@@ -208,6 +208,16 @@ class OffloadManager implements OffloadManagerInterface
 		if ($ttl_fresh || $ttl_stale) {
 			$result->then(function ($data) use ($key, $run, $ttl_fresh, $ttl_stale) {
 				if (!$run->isBad()) {
+					$run_ttl_fresh = $run->getTtlFresh();
+					if ($run_ttl_fresh !== null) {
+						$ttl_fresh = $run_ttl_fresh;
+					}
+
+					$run_ttl_stale = $run->getTtlStale();
+					if ($run_ttl_stale !== null) {
+						$ttl_stale = $run_ttl_stale;
+					}
+
 					$this->cache->set($key, $data, $ttl_fresh, $ttl_stale, $run->getCacheOptions());
 				}
 			});

@@ -8,9 +8,9 @@ use Aol\Offload\OffloadManager;
 
 class OffloadManagerMemoryTest extends OffloadManagerTest
 {
-    protected function setUp()
-    {
-        $this->base_cache = new OffloadCacheMemory();
-        $this->manager = new OffloadManager($this->base_cache, new OffloadLockMemory());
-    }
+	protected function setUp()
+	{
+		$this->base_cache = new OffloadCacheMemory();
+		$this->manager = new OffloadManager($this->base_cache, new OffloadLockMemory());
+	}
 }
