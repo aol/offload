@@ -1,8 +1,6 @@
 <?php
 
-namespace Aol\Offload\Tests\Cache;
-
-use Aol\Offload\Cache\OffloadCacheRedis;
+namespace Aol\Offload\Cache;
 
 class OffloadCacheRedisTest extends OffloadCacheTest
 {

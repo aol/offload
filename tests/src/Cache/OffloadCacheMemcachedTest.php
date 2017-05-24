@@ -1,8 +1,6 @@
 <?php
 
-namespace Aol\Offload\Tests\Cache;
-
-use Aol\Offload\Cache\OffloadCacheMemcached;
+namespace Aol\Offload\Cache;
 
 class OffloadCacheMemcachedTest extends OffloadCacheTest
 {

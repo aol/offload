@@ -1,10 +1,9 @@
 <?php
 
-namespace Aol\Offload\Tests;
+namespace Aol\Offload;
 
 use Aol\Offload\Cache\OffloadCacheMemory;
 use Aol\Offload\Lock\OffloadLockMemory;
-use Aol\Offload\OffloadManager;
 
 class OffloadManagerMemoryTest extends OffloadManagerTest
 {

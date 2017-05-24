@@ -21,5 +21,12 @@
 		"psr-4": {
 			"Aol\\Offload\\": "src/"
 		}
+	},
+	"autoload-dev": {
+		"files": [
+			"tests/src/Cache/OffloadCacheTest.php",
+			"tests/src/Lock/OffloadLockTest.php",
+			"tests/src/OffloadManagerTest.php"
+		]
 	}
 }

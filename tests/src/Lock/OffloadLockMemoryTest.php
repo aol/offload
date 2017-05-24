@@ -1,8 +1,6 @@
 <?php
 
-namespace Aol\Offload\Tests\Lock;
-
-use Aol\Offload\Lock\OffloadLockMemory;
+namespace Aol\Offload\Lock;
 
 class OffloadLockMemoryTest extends OffloadLockTest
 {

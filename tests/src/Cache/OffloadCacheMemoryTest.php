@@ -1,8 +1,6 @@
 <?php
 
-namespace Aol\Offload\Tests\Cache;
-
-use Aol\Offload\Cache\OffloadCacheMemory;
+namespace Aol\Offload\Cache;
 
 class OffloadCacheMemoryTest extends OffloadCacheTest
 {

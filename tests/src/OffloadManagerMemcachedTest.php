@@ -1,10 +1,9 @@
 <?php
 
-namespace Aol\Offload\Tests;
+namespace Aol\Offload;
 
 use Aol\Offload\Cache\OffloadCacheMemcached;
 use Aol\Offload\Lock\OffloadLockMemcached;
-use Aol\Offload\OffloadManager;
 
 class OffloadManagerMemcachedTest extends OffloadManagerTest
 {
