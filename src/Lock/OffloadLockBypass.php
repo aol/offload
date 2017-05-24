@@ -7,19 +7,19 @@ namespace Aol\Offload\Lock;
  */
 class OffloadLockBypass implements OffloadLockInterface
 {
-	/**
-	 * @inheritdoc
-	 */
-	public function lock($key, $timeout_seconds)
-	{
-		return 'bypass';
-	}
+    /**
+     * @inheritdoc
+     */
+    public function lock($key, $timeout_seconds)
+    {
+        return 'bypass';
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function unlock($token)
-	{
-		return true;
-	}
+    /**
+     * @inheritdoc
+     */
+    public function unlock($token)
+    {
+        return true;
+    }
 }
