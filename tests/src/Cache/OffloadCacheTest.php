@@ -1,8 +1,6 @@
 <?php
 
-namespace Aol\Offload\Tests\Cache;
-
-use Aol\Offload\Cache\OffloadCacheInterface;
+namespace Aol\Offload\Cache;
 
 abstract class OffloadCacheTest extends \PHPUnit_Framework_TestCase
 {

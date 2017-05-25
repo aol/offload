@@ -1,8 +1,6 @@
 <?php
 
-namespace Aol\Offload\Tests\Lock;
-
-use Aol\Offload\Lock\OffloadLockRedis;
+namespace Aol\Offload\Lock;
 
 class OffloadLockRedisTest extends OffloadLockTest
 {

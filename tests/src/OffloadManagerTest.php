@@ -1,14 +1,10 @@
 <?php
 
-namespace Aol\Offload\Tests;
+namespace Aol\Offload;
 
 use Aol\Offload\Cache\OffloadCacheInterface;
 use Aol\Offload\Deferred\OffloadDeferred;
 use Aol\Offload\Exceptions\OffloadDrainException;
-use Aol\Offload\OffloadManagerInterface;
-use Aol\Offload\OffloadManager;
-use Aol\Offload\OffloadResult;
-use Aol\Offload\OffloadRun;
 
 abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
 {

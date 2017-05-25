@@ -1,8 +1,6 @@
 <?php
 
-namespace Aol\Offload\Tests\Lock;
-
-use Aol\Offload\Lock\OffloadLockMemcached;
+namespace Aol\Offload\Lock;
 
 class OffloadLockMemcachedTest extends OffloadLockTest
 {

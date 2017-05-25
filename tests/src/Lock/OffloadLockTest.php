@@ -1,8 +1,6 @@
 <?php
 
-namespace Aol\Offload\Tests\Lock;
-
-use Aol\Offload\Lock\OffloadLockInterface;
+namespace Aol\Offload\Lock;
 
 abstract class OffloadLockTest extends \PHPUnit_Framework_TestCase
 {

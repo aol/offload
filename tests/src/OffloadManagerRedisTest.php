@@ -1,10 +1,9 @@
 <?php
 
-namespace Aol\Offload\Tests;
+namespace Aol\Offload;
 
 use Aol\Offload\Cache\OffloadCacheRedis;
 use Aol\Offload\Lock\OffloadLockRedis;
-use Aol\Offload\OffloadManager;
 
 class OffloadManagerRedisTest extends OffloadManagerTest
 {

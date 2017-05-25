@@ -1,13 +1,8 @@
 <?php
 
-namespace Aol\Offload\Tests;
+namespace Aol\Offload;
 
-use Aol\Offload\Cache\OffloadCacheInterface;
 use Aol\Offload\Lock\OffloadLockInterface;
-use Aol\Offload\OffloadManager;
-use Aol\Offload\OffloadManagerCache;
-use Aol\Offload\OffloadResult;
-use Aol\Offload\OffloadRun;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
