@@ -170,7 +170,7 @@ class OffloadManager implements OffloadManagerInterface
 
             // If there is no data in cache or the data is stale and background fetch is turned off,
             // run the repopulate immediately and cache the results.
-            $data = $this->run($key, $repopulate, $options)->wait();
+            $data = $this->run($key, $repopulate, $options);
             $result = new OffloadResult($data, false, 0);
 
         } elseif ($stale) {

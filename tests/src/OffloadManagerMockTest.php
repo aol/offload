@@ -14,9 +14,6 @@ class OffloadManagerMockTest extends TestCase
     /** @var OffloadManagerCache|MockObject */
     private $cache;
 
-    /** @var OffloadLockInterface|MockObject */
-    private $lock;
-
     protected function setUp()
     {
         $this->offload_manager = new OffloadManager(

@@ -2,10 +2,15 @@
 
 namespace Aol\Offload;
 
+use Aol\Offload\Deferred\OffloadDeferredComplete;
+use Aol\Offload\Deferred\OffloadDeferredInterface;
+
 class OffloadResult
 {
     /** @var mixed The data. */
     protected $data;
+    /** @var OffloadDeferredInterface|null */
+    protected $deferred;
     /** @var bool Whether the data came from cache. */
     protected $from_cache;
     /** @var int When the data expires. */
@@ -22,9 +27,25 @@ class OffloadResult
      */
     public function __construct($data, $from_cache, $expires)
     {
-        $this->data       = $data;
+        if ($data instanceof OffloadDeferredInterface) {
+            $this->deferred = $data;
+        } else {
+            $this->data = $data;
+        }
         $this->from_cache = $from_cache;
         $this->expires    = $expires;
+    }
+
+    /**
+     * @return OffloadDeferredInterface
+     */
+    public function getDeferred()
+    {
+        if (!$this->deferred instanceof OffloadDeferredInterface) {
+            $this->deferred = new OffloadDeferredComplete($this->data);
+        }
+
+        return $this->deferred;
     }
 
     /**
@@ -32,6 +53,10 @@ class OffloadResult
      */
     public function getData()
     {
+        if ($this->data === null && $this->deferred instanceof OffloadDeferredInterface) {
+            $this->data = $this->deferred->wait();
+        }
+
         return $this->data;
     }
 
