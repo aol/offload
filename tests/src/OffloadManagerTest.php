@@ -31,7 +31,7 @@ abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($data, $result->getData());
         $this->assertTrue($result->isFromCache());
         $this->assertGreaterThanOrEqual($result->getExpireTime(), time());
-        $this->assertTrue($result->isStale(), 'asd');
+        $this->assertTrue($result->isStale());
     }
 
     public function testFetchCachedFresh()
@@ -42,6 +42,7 @@ abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($result->isFromCache());
         $result = $this->manager->fetch(__METHOD__, function () use ($data) { return $data; });
         $this->assertEquals($data, $result->getData());
+        $this->assertEquals($data, $result->getDeferred()->wait());
         $this->assertTrue($result->isFromCache());
         $this->assertTrue($result->getStaleTime() < 0);
         $this->assertFalse($result->isStale());
@@ -186,7 +187,10 @@ abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
                 return $data;
             });
         });
+
+        $this->assertNull($this->base_cache->get(__METHOD__));
         $this->assertEquals($data, $result->getData());
+        $this->assertNotNull($this->base_cache->get(__METHOD__));
     }
 
     public function testRealDeferredAlreadyWaited()
@@ -200,6 +204,8 @@ abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
             $defer->wait();
             return $defer;
         });
+
+        $this->assertNotNull($this->base_cache->get(__METHOD__));
         $this->assertEquals($data, $result->getData());
     }
 
