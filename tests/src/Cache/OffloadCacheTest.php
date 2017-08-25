@@ -9,7 +9,7 @@ abstract class OffloadCacheTest extends \PHPUnit_Framework_TestCase
 
     public function testNoValue()
     {
-        $this->assertNull($this->cache->get(__METHOD__));
+        self::assertNull($this->cache->get(__METHOD__));
     }
 
     /**
@@ -18,8 +18,9 @@ abstract class OffloadCacheTest extends \PHPUnit_Framework_TestCase
     public function testCache($key, $value)
     {
         $key = __METHOD__ . $key;
-        $this->assertTrue($this->cache->set($key, $value, 5));
-        $this->assertEquals($value, $this->cache->get($key));
+        $val = serialize($value);
+        self::assertTrue($this->cache->set($key, $val, 5));
+        self::assertEquals($val, $this->cache->get($key));
     }
 
     public function cacheValues()

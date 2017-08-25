@@ -263,6 +263,85 @@ The `OffloadResult` class provides the following methods:
 |`getStaleTime()`|How long the data has been stale in seconds. If the value is less than zero, that's how far it is from becoming stale.|
 |`isStale()`|Whether the result is from cache, but is stale.|
 
+## Encoders
+
+By default, offload will use `OffloadEncoderStandard` (which does simple PHP serialization) to encode and decode data stored in cache. You can change this by implementing `OffloadEncoderInterface` and setting the encoder on the `OffloadManagerCache` instance.
+
+```php
+class CustomEncoder implements OffloadEncoderInterface
+{
+    // ...
+
+    public function encode($object)
+    {
+        // ... Encode the value ...
+        return $string_value;
+    }
+
+    public function decode($string)
+    {
+        // ... Decode the value ...
+        return $object_value;
+    }
+}
+
+// ...
+
+$offload = new OffloadManager(/* ... */);
+
+// Change the encoder.
+$offload->getCache()->setEncoder(new CustomEncoder(/* ... */));
+```
+
+By default offload will use the encoder you set to _decode_ as well. You can change the decoding to use a separate instance by calling `setDecoder`:
+
+```php
+$offload->getCache()->setEncoder(new FooEncoder(/* ... */));
+$offload->getCache()->setDecoder(new BarEncoder(/* ... */));
+```
+
+### Encryption
+
+Offload ships with an encryption encoder that leverages AES-256 encryption. It wraps any other encoder implementing `OffloadEncoderInterface` To use it simply set it as the encoder on the offload cache:
+
+```php
+// Get the base encoder.
+$base_encoder = $offload->getCache()->getEncoder();
+
+// Wrap it with an encrypting encoder.
+$encrypting_encoder = new OffloadEncoderEncryptedAes256(
+    $base_encoder,
+    // The key ID for the encryption.
+    'foo',
+    // Secret keys by ID. This enables key cycling.
+    [
+        'foo' => 'my_secret_key'
+    ]
+)
+
+$offload->getCache()->setEncoder($encrypting_encoder);
+```
+
+#### Custom Encryption
+
+You can implement custom encryption by simply extending the abstract class `OffloadEncoderEncrypted`.
+
+```php
+class CustomEncryptionEncoder extends OffloadEncoderEncrypted
+{
+    // ...
+
+    protected function encrypt($string, $key)
+    {
+        // ... return encrypted string ..
+    }
+
+    protected function decrypt($string, $key)
+    {
+        // ... return decrypted string ..
+    }
+}
+```
 
 ## License
 

@@ -4,6 +4,7 @@ namespace Aol\Offload;
 
 use Aol\Offload\Cache\OffloadCacheInterface;
 use Aol\Offload\Deferred\OffloadDeferred;
+use Aol\Offload\Encoders\OffloadEncoderStandard;
 use Aol\Offload\Exceptions\OffloadDrainException;
 
 abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
@@ -231,5 +232,37 @@ abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
             return;
         }
         $this->fail('Expected OffloadDrainException');
+    }
+
+    public function testCacheUsesSameEncoder()
+    {
+        $encoder = $this->manager->getCache()->getEncoder();
+        self::assertSame($encoder, $this->manager->getCache()->getEncoder());
+    }
+
+    public function testCacheEncoderCanBeSet()
+    {
+        $encoder1 = $this->manager->getCache()->getEncoder();
+        $encoder2 = new OffloadEncoderStandard();
+        $this->manager->getCache()->setEncoder($encoder2);
+        self::assertSame($encoder2, $this->manager->getCache()->getEncoder());
+        self::assertNotSame($encoder1, $this->manager->getCache()->getEncoder());
+    }
+
+    public function testCacheDecoderCanBeSet()
+    {
+        $decoder1 = $this->manager->getCache()->getDecoder();
+        $decoder2 = new OffloadEncoderStandard();
+        $this->manager->getCache()->setDecoder($decoder2);
+        self::assertSame($decoder2, $this->manager->getCache()->getDecoder());
+        self::assertNotSame($decoder1, $this->manager->getCache()->getDecoder());
+    }
+
+    public function testCacheDecoderDefaultsToEncoder()
+    {
+        $encoder = new OffloadEncoderStandard();
+        $this->manager->getCache()->setEncoder($encoder);
+        self::assertSame($encoder, $this->manager->getCache()->getEncoder());
+        self::assertSame($encoder, $this->manager->getCache()->getDecoder());
     }
 }

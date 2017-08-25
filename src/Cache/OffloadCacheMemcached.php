@@ -31,8 +31,7 @@ class OffloadCacheMemcached implements OffloadCacheInterface
     {
         $result = $this->read->get($key);
         $result = $this->read->getResultCode() !== \Memcached::RES_SUCCESS ? null : $result;
-        $value  = $this->unserialize($result);
-        return $value;
+        return $result;
     }
 
     /**
@@ -40,12 +39,12 @@ class OffloadCacheMemcached implements OffloadCacheInterface
      */
     public function getMany(array $keys, array $options = [])
     {
-        $null   = null;
+        $null = null;
         $result = $this->read->getMulti($keys, $null);
-        $valid  = $result && is_array($result) && $this->read->getResultCode() === \Memcached::RES_SUCCESS;
+        $valid = $result && is_array($result) && $this->read->getResultCode() === \Memcached::RES_SUCCESS;
         $values = [];
         foreach ($keys as $key) {
-            $values[] = ($valid && isset($result[$key])) ? $this->unserialize($result[$key]) : null;
+            $values[] = ($valid && isset($result[$key])) ? $result[$key] : null;
         }
         return $values;
     }
@@ -55,8 +54,7 @@ class OffloadCacheMemcached implements OffloadCacheInterface
      */
     public function set($key, $value, $ttl_seconds, array $options = [])
     {
-        $serialized = $this->serialize($value);
-        $result     = $this->write->set($key, $serialized, (int)$ttl_seconds);
+        $result = $this->write->set($key, $value, (int)$ttl_seconds);
         return $result === true;
     }
 
@@ -67,15 +65,5 @@ class OffloadCacheMemcached implements OffloadCacheInterface
     {
         $result = $this->write->deleteMulti($keys);
         return $result ? count($keys) : 0;
-    }
-
-    protected function serialize($object)
-    {
-        return serialize($object);
-    }
-
-    protected function unserialize($string)
-    {
-        return ($string === null || $string === false) ? null : unserialize($string);
     }
 }

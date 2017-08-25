@@ -14,7 +14,7 @@ interface OffloadCacheInterface
      * @param string $key     The key to get.
      * @param array  $options Additional custom options.
      *
-     * @return mixed|null The value or null if none is present in cache.
+     * @return string The value or null if none is present in cache.
      */
     function get($key, array $options = []);
 
@@ -25,7 +25,7 @@ interface OffloadCacheInterface
      * @param string[] $keys    The key to get.
      * @param array    $options Additional custom options.
      *
-     * @return mixed[] The values or null if none is present in cache for all the given keys.
+     * @return string[] The values or null if none is present in cache for all the given keys.
      */
     function getMany(array $keys, array $options = []);
 
@@ -33,7 +33,7 @@ interface OffloadCacheInterface
      * Set the given key to the given value in the cache.
      *
      * @param string $key         The key to set.
-     * @param mixed  $value       The value to set the key to.
+     * @param string $value       The value to set the key to.
      * @param float  $ttl_seconds The TTL for the key.
      * @param array  $options     Additional custom options.
      *
