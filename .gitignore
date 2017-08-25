@@ -5,3 +5,4 @@ coverage
 composer.lock
 atlassian-ide-plugin.xml
 .DS_Store
+dump.rdb
