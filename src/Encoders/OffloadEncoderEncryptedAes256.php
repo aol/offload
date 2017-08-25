@@ -6,10 +6,10 @@ class OffloadEncoderEncryptedAes256 extends OffloadEncoderEncrypted
 {
     const ENCRYPTION_METHOD = 'AES-256-CBC';
 
-    protected function encrypt($data, $key)
+    protected function encrypt($string, $key)
     {
         $iv = random_bytes(16);
-        return $iv . openssl_encrypt($data, self::ENCRYPTION_METHOD, $key, OPENSSL_RAW_DATA, $iv);
+        return $iv . openssl_encrypt($string, self::ENCRYPTION_METHOD, $key, OPENSSL_RAW_DATA, $iv);
     }
 
     protected function decrypt($string, $key)

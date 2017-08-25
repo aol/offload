@@ -331,7 +331,7 @@ class CustomEncryptionEncoder extends OffloadEncoderEncrypted
 {
     // ...
 
-    protected function encrypt($data, $key)
+    protected function encrypt($string, $key)
     {
         // ... return encrypted string ..
     }
