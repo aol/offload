@@ -15,6 +15,7 @@
 	"require-dev": {
 		"predis/predis": "^1.0",
 		"phpunit/phpunit": "^4.0",
+		"paragonie/random_compat": "^2.0",
 		"codeclimate/php-test-reporter": "dev-master"
 	},
 	"autoload": {
@@ -26,7 +27,9 @@
 		"files": [
 			"tests/src/Cache/OffloadCacheTest.php",
 			"tests/src/Lock/OffloadLockTest.php",
-			"tests/src/OffloadManagerTest.php"
+			"tests/src/OffloadManagerTest.php",
+			"tests/src/OffloadManagerMemcachedTest.php",
+			"tests/src/Encoders/OffloadEncoderTest.php"
 		]
 	}
 }
