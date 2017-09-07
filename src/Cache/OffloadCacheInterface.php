@@ -16,7 +16,7 @@ interface OffloadCacheInterface
      *
      * @return string The value or null if none is present in cache.
      */
-    function get($key, array $options = []);
+    public function get($key, array $options = []);
 
     /**
      * Get the values from cache for the given keys.
@@ -27,7 +27,7 @@ interface OffloadCacheInterface
      *
      * @return string[] The values or null if none is present in cache for all the given keys.
      */
-    function getMany(array $keys, array $options = []);
+    public function getMany(array $keys, array $options = []);
 
     /**
      * Set the given key to the given value in the cache.
@@ -39,7 +39,7 @@ interface OffloadCacheInterface
      *
      * @return bool Whether the set was successful.
      */
-    function set($key, $value, $ttl_seconds, array $options = []);
+    public function set($key, $value, $ttl_seconds, array $options = []);
 
 
     /**
@@ -50,5 +50,5 @@ interface OffloadCacheInterface
      *
      * @return int The number of keys deleted.
      */
-    function delete(array $keys, array $options = []);
+    public function delete(array $keys, array $options = []);
 }
