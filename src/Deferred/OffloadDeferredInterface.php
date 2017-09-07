@@ -12,12 +12,12 @@ interface OffloadDeferredInterface
      *
      * @return mixed The result.
      */
-    function wait();
+    public function wait();
 
     /**
      * When the result is complete, call the given listener.
      *
      * @param callable $fulfilled The fulfilled listener.
      */
-    function then(callable $fulfilled);
+    public function then(callable $fulfilled);
 }

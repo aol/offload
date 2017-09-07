@@ -15,7 +15,7 @@ interface OffloadLockInterface
      *
      * @return mixed|null An unlock token or null if the key could not be locked.
      */
-    function lock($key, $timeout_seconds);
+    public function lock($key, $timeout_seconds);
 
     /**
      * Unlock the given key.
@@ -24,5 +24,5 @@ interface OffloadLockInterface
      *
      * @return bool Whether the key was unlocked.
      */
-    function unlock($token);
+    public function unlock($token);
 }

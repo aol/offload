@@ -23,7 +23,7 @@ interface OffloadManagerInterface
      *
      * @return OffloadResult The offload result.
      */
-    function fetch($key, callable $repopulate, $options = []);
+    public function fetch($key, callable $repopulate, $options = []);
 
     /**
      * Fetch a value from cache, if not present, offload a repopulate for the cache.
@@ -35,7 +35,7 @@ interface OffloadManagerInterface
      *
      * @return OffloadResult The offload result.
      */
-    function fetchCached($key, $ttl_fresh, callable $repopulate, $options = []);
+    public function fetchCached($key, $ttl_fresh, callable $repopulate, $options = []);
 
     /**
      * Queue a task to run when the offload manager is drained.
@@ -45,7 +45,7 @@ interface OffloadManagerInterface
      * @param callable $task    The task to run.
      * @param array    $options Options for the task.
      */
-    function queue($key, callable $task, $options = []);
+    public function queue($key, callable $task, $options = []);
 
     /**
      * Queue a task to run when the offload manager is drained.
@@ -56,19 +56,19 @@ interface OffloadManagerInterface
      * @param callable $task      The task to run.
      * @param array    $options   Options for the task.
      */
-    function queueCached($key, $ttl_fresh, callable $task, $options = []);
+    public function queueCached($key, $ttl_fresh, callable $task, $options = []);
 
     /**
      * Get the offload manager cache.
      *
      * @return OffloadManagerCacheInterface The offload manager cache.
      */
-    function getCache();
+    public function getCache();
 
     /**
      * @return bool Whether this offload manager has queued work.
      */
-    function hasWork();
+    public function hasWork();
 
     /**
      * Drain all work in this offload manager.
@@ -77,5 +77,5 @@ interface OffloadManagerInterface
      *
      * @throws OffloadDrainException When there were errors draining results.
      */
-    function drain();
+    public function drain();
 }

@@ -15,7 +15,7 @@ interface OffloadManagerCacheInterface
 	 *
 	 * @return OffloadResult The offload result.
 	 */
-	function get($key, array $options = []);
+	public function get($key, array $options = []);
 
 	/**
 	 * Get many items from cache.
@@ -25,7 +25,7 @@ interface OffloadManagerCacheInterface
 	 *
 	 * @return OffloadResult[] Ordered offload results.
 	 */
-	function getMany(array $keys, array $options = []);
+	public function getMany(array $keys, array $options = []);
 
 	/**
 	 * Delete items from cache.
@@ -35,7 +35,7 @@ interface OffloadManagerCacheInterface
 	 *
 	 * @return bool Whether the delete was successful.
 	 */
-	function delete(array $keys, array $options = []);
+	public function delete(array $keys, array $options = []);
 
 	/**
 	 * Set an item in cache.
@@ -48,5 +48,5 @@ interface OffloadManagerCacheInterface
 	 *
 	 * @return bool Whether the set was successful.
 	 */
-	function set($key, $data, $ttl_fresh_seconds, $ttl_stale_seconds, array $options = []);
+	public function set($key, $data, $ttl_fresh_seconds, $ttl_stale_seconds, array $options = []);
 }
