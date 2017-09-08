@@ -27,23 +27,25 @@ class OffloadManager implements OffloadManagerInterface
         self::OPTION_BACKGROUND              => true,
         self::OPTION_BACKGROUND_TIMEOUT      => 5.0,
         self::OPTION_BACKGROUND_RELEASE_LOCK => true,
-        self::OPTION_CACHE_OPTIONS           => []
+        self::OPTION_CACHE_OPTIONS           => [],
+        self::OPTION_NAMESPACE               => ''
     ];
 
     /**
      * Create a new offload manager.
      *
-     * @param OffloadCacheInterface $cache The underlying cache to use.
-     * @param OffloadLockInterface  $lock  The lock to use.
+     * @param OffloadCacheInterface $cache           The underlying cache to use.
+     * @param OffloadLockInterface  $lock            The lock to use.
+     * @param array                 $default_options The default options for this offload manager.
      */
     public function __construct(
         OffloadCacheInterface $cache,
         OffloadLockInterface $lock,
         array $default_options = []
     ) {
-        $this->cache           = new OffloadManagerCache($cache);
-        $this->lock            = $lock;
         $this->default_options = $default_options + self::$static_options;
+        $this->cache           = new OffloadManagerCache($cache, $this->default_options[self::OPTION_NAMESPACE]);
+        $this->lock            = $lock;
     }
 
     /**

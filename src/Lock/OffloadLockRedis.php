@@ -21,7 +21,7 @@ class OffloadLockRedis implements OffloadLockInterface
     public function lock($key, $timeout_seconds)
     {
         $result = $this->client->set($key, '1', 'PX', (int)(1000 * $timeout_seconds), 'NX');
-        $ok     = $result === true || @strval($result) === 'OK';
+        $ok     = $result === true || (string)$result === 'OK';
         return $ok ? $key : null;
     }
 
@@ -31,7 +31,6 @@ class OffloadLockRedis implements OffloadLockInterface
     public function unlock($token)
     {
         $result = $this->client->del($token);
-        $ok     = $result > 0;
-        return $ok;
+        return $result > 0;
     }
 }

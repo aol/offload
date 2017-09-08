@@ -17,15 +17,19 @@ class OffloadManagerCache implements OffloadManagerCacheInterface
     private $encoder;
     /** @var OffloadEncoderInterface The decoder to use (default to the encoder). */
     private $decoder;
+    /** @var string The namespace to use in cache key. */
+    private $namespace;
 
     /**
      * Create a new offload manager.
      *
-     * @param OffloadCacheInterface $cache The underlying cache to use.
+     * @param OffloadCacheInterface $cache     The underlying cache to use.
+     * @param string                $namespace The namespace to use in cache key.
      */
-    public function __construct(OffloadCacheInterface $cache)
+    public function __construct(OffloadCacheInterface $cache, $namespace = '')
     {
         $this->cache = $cache;
+        $this->namespace = $namespace;
     }
 
     /**
@@ -79,14 +83,13 @@ class OffloadManagerCache implements OffloadManagerCacheInterface
      */
     public function get($key, array $options = [])
     {
-        $cached = $this->cache->get($key, $options);
+        $cached = $this->cache->get($this->namespace . $key, $options);
         $value = $this->decode($cached);
         if (is_array($value) && count($value) === 2) {
             list ($data, $exp) = $value;
             return new OffloadResult($data, true, $exp);
-        } else {
-            return OffloadResult::miss();
         }
+        return OffloadResult::miss();
     }
 
     /**
@@ -94,15 +97,15 @@ class OffloadManagerCache implements OffloadManagerCacheInterface
      */
     public function getMany(array $keys, array $options = [])
     {
+        $keys = $this->getKeysWithNamespace($keys);
         $cached = $this->cache->getMany($keys, $options);
         return array_map(function ($cached) {
             $value = $this->decode($cached);
             if (is_array($value) && count($value) === 2) {
                 list ($data, $exp) = $value;
                 return new OffloadResult($data, true, $exp);
-            } else {
-                return OffloadResult::miss();
             }
+            return OffloadResult::miss();
         }, $cached);
     }
 
@@ -111,6 +114,7 @@ class OffloadManagerCache implements OffloadManagerCacheInterface
      */
     public function delete(array $keys, array $options = [])
     {
+        $keys = $this->getKeysWithNamespace($keys);
         return $this->cache->delete($keys, $options);
     }
 
@@ -122,7 +126,7 @@ class OffloadManagerCache implements OffloadManagerCacheInterface
         $exp = time() + (int)$ttl_fresh_seconds;
         $ttl = $ttl_fresh_seconds + $ttl_stale_seconds;
         $encoded = $this->encode([$data, $exp]);
-        return $this->cache->set($key, $encoded, $ttl, $options);
+        return $this->cache->set($this->namespace . $key, $encoded, $ttl, $options);
     }
 
     /**
@@ -144,5 +148,17 @@ class OffloadManagerCache implements OffloadManagerCacheInterface
             return null;
         }
         return $this->getDecoder()->decode($string);
+    }
+
+    /**
+     * Returns keys with namespace.
+     * @param array $keys
+     * @return array
+     */
+    private function getKeysWithNamespace(array $keys = [])
+    {
+        return array_map(function ($key) {
+            return $this->namespace . $key;
+        }, $keys);
     }
 }
