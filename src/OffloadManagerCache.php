@@ -152,8 +152,10 @@ class OffloadManagerCache implements OffloadManagerCacheInterface
 
     /**
      * Returns keys with namespace.
-     * @param array $keys
-     * @return array
+     *
+     * @param array $keys The cache Keys.
+     *
+     * @return array List of keys with namespace.
      */
     private function getKeysWithNamespace(array $keys = [])
     {
