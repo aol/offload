@@ -13,6 +13,7 @@ interface OffloadManagerInterface
     const OPTION_BACKGROUND_TIMEOUT      = 'background_timeout';
     const OPTION_BACKGROUND_RELEASE_LOCK = 'background_release_lock';
     const OPTION_CACHE_OPTIONS           = 'cache_options';
+    const OPTION_NAMESPACE               = 'namespace';
 
     /**
      * Fetch a value from cache, if not present, offload a repopulate for the cache.
