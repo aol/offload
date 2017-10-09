@@ -50,6 +50,19 @@ abstract class OffloadManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertGreaterThan(time(), $result->getExpireTime());
     }
 
+    public function testFetchForced()
+    {
+        $data = __METHOD__ . time() . rand(0, 100);
+        $result = $this->manager->fetchCached(__METHOD__, 5, function () use ($data) { return $data; });
+        $this->assertEquals($data, $result->getData());
+        $this->assertFalse($result->isFromCache());
+        $this->assertFalse($result->isStale());
+        $result = $this->manager->fetchCached(__METHOD__, 5, function () use ($data) { return $data; }, [OffloadManagerInterface::OPTION_FORCE => true]);
+        $this->assertEquals($data, $result->getData());
+        $this->assertFalse($result->isFromCache());
+        $this->assertFalse($result->isStale());
+    }
+
     public function testFetchBad()
     {
         $data = __METHOD__ . time() . rand(0, 100);
