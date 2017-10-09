@@ -28,7 +28,8 @@ class OffloadManager implements OffloadManagerInterface
         self::OPTION_BACKGROUND_TIMEOUT      => 5.0,
         self::OPTION_BACKGROUND_RELEASE_LOCK => true,
         self::OPTION_CACHE_OPTIONS           => [],
-        self::OPTION_NAMESPACE               => ''
+        self::OPTION_NAMESPACE               => '',
+        self::OPTION_FORCE                   => false,
     ];
 
     /**
@@ -157,8 +158,8 @@ class OffloadManager implements OffloadManagerInterface
      */
     protected function refresh($key, callable $repopulate, $options = [])
     {
-        // Check cache as long as there is a cache time set.
-        if ($options[self::OPTION_TTL_STALE] || $options[self::OPTION_TTL_FRESH]) {
+        // Check cache as long as the refresh isn't forced and there is a cache time set.
+        if (!$options[self::OPTION_FORCE] && ($options[self::OPTION_TTL_STALE] || $options[self::OPTION_TTL_FRESH])) {
             $cache_options = empty($options[self::OPTION_CACHE_OPTIONS]) ? [] : $options[self::OPTION_CACHE_OPTIONS];
             $result = $this->cache->get($key, $cache_options);
         } else {
