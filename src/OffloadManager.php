@@ -15,7 +15,7 @@ class OffloadManager implements OffloadManagerInterface
     /** @var OffloadLockInterface The lock. */
     protected $lock;
     /** @var callable[] An array of tasks to run on drain. */
-    protected $tasks;
+    protected $tasks = [];
     /** @var array The default options for this offload manager. */
     protected $default_options;
 
